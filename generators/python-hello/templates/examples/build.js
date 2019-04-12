@@ -11,11 +11,13 @@ module.exports = (settings)=>{
 
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/python-chain-build.yaml`, {
     'param':{
-      'NAME': `${phases[phase].name}<%= name%>`,
+      'NAME': `<%= name%>`,
       'SUFFIX': phases[phase].suffix,
       'VERSION': phases[phase].tag,
-      'GIT_URL': oc.git.http_url,
-      'GIT_REF': oc.git.ref
+      'SOURCE_REPOSITORY_URL': oc.git.http_url,
+      'SOURCE_REPOSITORY_REF': oc.git.ref,
+      'SOURCE_BASE_CONTEXT_DIR': '.',
+      'SOURCE_CONTEXT_DIR': '.'
     }
   }))
 

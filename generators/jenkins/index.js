@@ -75,7 +75,9 @@ module.exports = class extends Generator {
           type: "password",
           name: "GH_PASSWORD",
           // eslint-disable-next-line prettier/prettier
-          message: "What is the personal access token for the GitHub account?\nSee https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line\n",
+          message: `What is the personal access token for the GitHub account?
+          See https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line
+          Required priveleges: public_repo, repo:status, repo_deployment, admin:repo_hook`
         }
       ]).then(answers => {
         const ocSecrets = spawnSync(

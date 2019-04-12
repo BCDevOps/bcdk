@@ -7,9 +7,9 @@ const name = '<%= name%>'
 const phases = {
   <%_ Object.keys(environments).forEach(function(envName){ _%>
   <%_ if (envName === "prod" || envName === "test") { _%>
-  <%= envName%>: {namespace:'<%= envName%>'    , name: `${name}`, phase: '<%= envName%>'  , changeId:changeId, suffix: `-<%= envName%>`  , instance: `${name}-<%= envName%>`  , version:`${version}`, tag:`<%= envName%>-${version}`},
+  <%= envName%>: {namespace:'<%= environments[envName].namespace%>'    , name: `${name}`, phase: '<%= envName%>'  , changeId:changeId, suffix: `-<%= envName%>`  , instance: `${name}-<%= envName%>`  , version:`${version}`, tag:`<%= envName%>-${version}`},
   <%_ } else { _%>
-  <%= envName%>: {namespace:'<%= envName%>'    , name: `${name}`, phase: '<%= envName%>'  , changeId:changeId, suffix: `-<%= envName%>-${changeId}`  , instance: `${name}-<%= envName%>-${changeId}`  , version:`${version}-${changeId}`, tag:`<%= envName%>-${version}-${changeId}`},
+  <%= envName%>: {namespace:'<%= environments[envName].namespace%>'    , name: `${name}`, phase: '<%= envName%>'  , changeId:changeId, suffix: `-<%= envName%>-${changeId}`  , instance: `${name}-<%= envName%>-${changeId}`  , version:`${version}-${changeId}`, tag:`<%= envName%>-${version}-${changeId}`},
   <%_ } _%><%_ }); _%>
 };
 

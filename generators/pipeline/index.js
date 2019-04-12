@@ -5,32 +5,37 @@ const Generator = require("../AbstractGenerator");
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
-    this.option("module", { type: String, required: false, desc: "My option" });
+    // this.option("module", { type: String, required: false, desc: "My option" });
     this.option("environments", {
       type: String,
       required: false,
       // eslint-disable-next-line prettier/prettier
       desc: "Environment names (E.g. build, dev, test, prod) separated by space."
     });
+    if (opts.module) {
+      console.log("Setting module");
+      this.module = opts.module;
+    }
   }
 
   async prompting() {
-    if (!this.options.module) {
-      await this.prompt([
-        {
-          type: "input",
-          name: "module",
-          // eslint-disable-next-line prettier/prettier
-          message: "What is this module id/key?",
-          default: "hello"
-        }
-      ]).then(answers => {
-        this.options.module = answers.module;
-      });
+    if (!this.module) {
+      if (!this.options.module) {
+        await this.prompt([
+          {
+            type: "input",
+            name: "module",
+            // eslint-disable-next-line prettier/prettier
+            message: "What is this module id/key?",
+            default: "hello"
+          }
+        ]).then(answers => {
+          this.options.module = answers.module;
+        });
+      }
+      this.module = this.answers.modules[this.options.module] || {};
+      this.answers.modules[this.options.module] = this.module;
     }
-
-    this.module = this.answers.modules[this.options.module] || {};
-    this.answers.modules[this.options.module] = this.module;
 
     await this.prompt([
       {
@@ -39,7 +44,8 @@ module.exports = class extends Generator {
         // eslint-disable-next-line prettier/prettier
         message: "What is this module name?",
         default: this.module.name || this.options.name
-      },{
+      },
+      {
         type: "input",
         name: "version",
         // eslint-disable-next-line prettier/prettier
@@ -53,8 +59,8 @@ module.exports = class extends Generator {
 
     if (!this.options.environments) {
       let defaultEnvironments = "build dev test prod";
-      if (!this.module.environments) {
-        defaultEnvironments = Object.keys(environments).join(" ");
+      if (this.module.environments) {
+        defaultEnvironments = Object.keys(this.module.environments).join(" ");
       }
       await this.prompt([
         {
@@ -70,6 +76,7 @@ module.exports = class extends Generator {
     }
 
     const environments = {};
+    this.module.environments = this.module.environments || {};
     // eslint-disable-next-line prettier/prettier
     this.options.environments.trim().split(" ")
       .forEach(item => {
@@ -87,7 +94,7 @@ module.exports = class extends Generator {
         default: (environments[item.trim()] || {}).namespace || this.module.namespace || ""
       });
     });
-    console.log(environments);
+
     await this.prompt(prompts).then(answers => {
       Object.keys(answers).forEach(item => {
         environments[item].namespace = answers[item];
@@ -99,12 +106,12 @@ module.exports = class extends Generator {
     this.log("Writing 'pipeline' files.");
     this.fs.copyTpl(
       this.templatePath(`.pipeline`),
-      this.destinationPath(`${this.options.module}/.pipeline`),
+      this.destinationPath(`${this.options.module.path}/.pipeline`),
       this.module
     );
     this.fs.copy(
       this.templatePath(`Jenkinsfile`),
-      this.destinationPath(`${this.options.module}/Jenkinsfile`)
+      this.destinationPath(`${this.options.module.path}/Jenkinsfile`)
     );
   }
 

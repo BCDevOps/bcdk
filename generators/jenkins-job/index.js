@@ -7,30 +7,35 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     // this.argument("name", { type: String, required: true });
-    this.option("module", { type: String, required: false, desc: "My option" });
+    // this.option("module", { type: String, required: false, desc: "My option" });
     this.option("name", { type: String, required: false, desc: "My option" });
     this.option("jenkinsFilePath", {
       type: String,
       required: false,
       desc: "My option"
     });
+    if (opts.module) {
+      this.module = opts.module;
+    }
   }
 
   async prompting() {
-    if (!this.options.module) {
-      await this.prompt([
-        {
-          type: "input",
-          name: "module",
-          message: "Module name?",
-          default: "."
-        }
-      ]).then(answers => {
-        this.options.module = answers.module;
-      });
+    if (!this.module) {
+      if (!this.options.module) {
+        await this.prompt([
+          {
+            type: "input",
+            name: "module",
+            message: "Module name?",
+            default: "."
+          }
+        ]).then(answers => {
+          this.options.module = answers.module;
+        });
+      }
+      this.module = this.answers.modules[this.options.module] || {};
+      this.answers.modules[this.options.module] = this.module;
     }
-    this.module = this.answers.modules[this.options.module] || {};
-    this.answers.modules[this.options.module] = this.module;
 
     // eslint-disable-next-line no-negated-condition
     if (!this.options.name) {
@@ -38,7 +43,7 @@ module.exports = class extends Generator {
         {
           type: "input",
           name: "job",
-          message: "Job name?",
+          message: "Jenkins Job name?",
           default: this.module.jenkinsJobName || ""
         }
       ]).then(answers => {

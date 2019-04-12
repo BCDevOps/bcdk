@@ -36,13 +36,13 @@ module.exports = class extends Generator {
           ["-n", answers.namespace, "auth", "can-i", "create", "rolebinding"],
           { encoding: "utf-8" }
         );
+
         if (canICreateRoleBinding.status !== 0) {
           this.env.error(
             `It seems like you do not have admin privilege in the project '${chalk.red(
               answers.namespace
-            )}'. Please check that the namespace is correct.\nTry running the following command:\n${canICreateRoleBinding.args.join(
-              " "
-            )}`
+            )}'. Please check that the namespace is correct.\nTry running the following command:\n${canICreateRoleBinding.args &&
+              canICreateRoleBinding.args.join(" ")}`
           );
         }
         return answers;

@@ -82,13 +82,15 @@ module.exports = class extends Generator {
         // oc new-app -f .jenkins/openshift/secrets.json -p GH_USERNAME=abc -p GH_PASSWORD=123 --dry-run -o yaml
         const ocSecrets = spawnSync(
           "oc",
-          [
+          [ "process",
             "-n",
             this.module.namespace,
             "-f",
             `${this.templatePath(".jenkins")}/openshift/secrets.json`,
-            `--param=GH_USERNAME=${answers.GH_USERNAME}`,
-            `--param=GH_PASSWORD=${answers.GH_PASSWORD}`
+            "-p",
+            `GH_USERNAME=${answers.GH_USERNAME}`,
+            "-p",
+            `GH_PASSWORD=${answers.GH_PASSWORD}`
           ],
           { encoding: "utf-8" }
         );

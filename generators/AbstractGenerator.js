@@ -7,10 +7,10 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     if (opts.__answers) {
-      // console.log("Setting promptValues");
+      //console.log("Setting promptValues");
       this.answers = opts.__answers;
     } else {
-      // console.log("Loading promptValues");
+      //console.log("Loading promptValues");
       this.answers = this.config.get("promptValues") || {};
       this.answers.modules = this.answers.modules || {};
       this.config.set("promptValues", this.answers);

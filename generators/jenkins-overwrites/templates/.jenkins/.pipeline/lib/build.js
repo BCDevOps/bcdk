@@ -25,7 +25,8 @@ module.exports = (settings)=>{
       'NAME': phases[phase].name,
       'SUFFIX': phases[phase].suffix,
       'VERSION': phases[phase].tag,
-      'SLAVE_NAME':'main'
+      'SLAVE_NAME':'main',
+      'SOURCE_IMAGE_STREAM_TAG': phases[phase].name + ':' + phases[phase].tag
     }
   }));
 

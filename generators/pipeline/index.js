@@ -1,5 +1,5 @@
 "use strict";
-
+const { spawnSync } = require("child_process");
 const Generator = require("../AbstractGenerator");
 
 module.exports = class extends Generator {
@@ -12,6 +12,9 @@ module.exports = class extends Generator {
       // eslint-disable-next-line prettier/prettier
       desc: "Environment names (E.g. build, dev, test, prod) separated by space."
     });
+    // the name of the generator
+    this.name = "default";
+
     if (opts.module) {
       console.log("Setting module");
       this.module = opts.module;
@@ -125,6 +128,11 @@ module.exports = class extends Generator {
       this.templatePath(`Jenkinsfile`),
       this.destinationPath(`${this.module.path}/Jenkinsfile`)
     );
+  }
+
+  installingPackages() {
+    this.log("Installing Node Modules");
+    this.npmInstall([], {}, { cwd: `${this.options.module.path}/.pipeline` });
   }
 
   end() {

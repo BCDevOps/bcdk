@@ -7,10 +7,22 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Yeoman generator",
+      "name": "bcdk:jenkins",
       "program": "/Users/cvarjao/.nvm/versions/node/v8.15.0/lib/node_modules/yo/lib/cli.js",
       "args": [
         "bcdk:jenkins"
+      ],
+      "cwd": "/Users/cvarjao/Documents/GitHub/bcdevops/bcdk-test",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "bcdk:python-hello",
+      "program": "/Users/cvarjao/.nvm/versions/node/v8.15.0/lib/node_modules/yo/lib/cli.js",
+      "args": [
+        "bcdk:python-hello"
       ],
       "cwd": "/Users/cvarjao/Documents/GitHub/bcdevops/bcdk-test",
       "console": "integratedTerminal",

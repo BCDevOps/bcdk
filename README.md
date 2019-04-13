@@ -4,7 +4,7 @@ BC Developer Kit
 ## quick start quide
 
 ### notes
-This version uses BCDevOps/pipeline-cli v1.0 [link](https://github.com/BCDevOps/pipeline-cli/releases/tag/v1.0).   
+This version uses BCDevOps/pipeline-cli v1.1 [link](https://github.com/BCDevOps/pipeline-cli/releases/tag/v1.1). 
 
 The jenkins image(s)/scripts are from BCDevOps/openshift-components/.jenkins [link](https://github.com/BCDevOps/openshift-components/tree/cvarjao-update-jenkins-basic/.jenkins). 
 
@@ -20,6 +20,13 @@ You will need to login to openshift, with enough permissions to administer your 
 
 ```sh
 npm i yeoman -g
+```
+
+TODO: Consider using [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) since it will install Yeoman if it doesn't exist.
+```sh
+npx yo bcdk:jenkins
+npx yo bcdk:pipeline
+npx yo bcdk:python-hello
 ```
 
 ### setup
@@ -131,5 +138,6 @@ Note that when code is only local, this version of pipeline-cli will fail.
 > Error: Failed running 'git rev-parse HEAD:.jenkins/docker' as it returned 128
 
 
+## License
 
-
+Apache-2.0 © Province of British Columbia

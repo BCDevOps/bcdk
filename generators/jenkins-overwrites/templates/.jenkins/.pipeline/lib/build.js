@@ -4,7 +4,8 @@ const path = require('path');
 
 module.exports = (settings)=>{
   const phases=settings.phases
-  const oc=new OpenShiftClientX({'namespace':phases.build.namespace});
+  const options = settings.options
+  const oc=new OpenShiftClientX(Object.assign({'namespace':phases.build.namespace}, options));
   const phase='build'
   var objects = []
 
@@ -25,8 +26,8 @@ module.exports = (settings)=>{
       'NAME': phases[phase].name,
       'SUFFIX': phases[phase].suffix,
       'VERSION': phases[phase].tag,
-      'SLAVE_NAME':'main',
-      'SOURCE_IMAGE_STREAM_TAG': phases[phase].name + ':' + phases[phase].tag
+      'SOURCE_IMAGE_STREAM_TAG': `${phases[phase].name}:${phases[phase].tag}`,
+      'SLAVE_NAME':'main'
     }
   }));
 

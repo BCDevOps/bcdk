@@ -45,9 +45,28 @@ module.exports = class extends Generator {
     });
   }
 
+  _module(name) {
+    this.module = Object.assign(this.answers.modules[name] || {}, {
+      name: name
+    });
+    this.answers.modules[name] = this.module;
+    return this.module;
+  }
+
+  _component(name) {
+    this.module.components = this.module.components || {};
+    this.module.components[name] = Object.assign(
+      this.module.components[name] || {},
+      {
+        name: name
+      }
+    );
+    return this.module.components[name];
+  }
+
   _savePrompts() {
-    console.log("Saving answers:");
-    console.dir(this.answers);
+    // console.log("Saving answers:");
+    // console.dir(this.answers);
     this.config.set("promptValues", this.answers);
     this.config.save();
   }

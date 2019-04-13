@@ -3,7 +3,7 @@
 const Generator = require("../AbstractGenerator");
 const chalk = require("chalk");
 const { spawnSync } = require("child_process");
-const moduleName = ".jenkins";
+const moduleName = "jenkins";
 
 module.exports = class extends Generator {
   async prompting() {
@@ -16,15 +16,18 @@ module.exports = class extends Generator {
     } else {
       this.log(`You are authenticated in OpenShift as ${whoAmI.stdout}`);
     }
+
     this.module = this.answers.modules[moduleName] || {};
     this.answers.modules[moduleName] = this.module;
+    this.module.path = ".jenkins";
+
     await this.prompt([
       {
         type: "input",
         name: "namespace",
         message: "What is your openshift 'tools' namespace name?",
         // eslint-disable-next-line prettier/prettier
-        default: ((this.answers.modules || {})[moduleName] || {}).namespace || ""
+        default: this.module.namespace || ""
       }
     ])
       .then(answers => {
@@ -33,23 +36,19 @@ module.exports = class extends Generator {
           ["-n", answers.namespace, "auth", "can-i", "create", "rolebinding"],
           { encoding: "utf-8" }
         );
+
         if (canICreateRoleBinding.status !== 0) {
           this.env.error(
             `It seems like you do not have admin privilege in the project '${chalk.red(
               answers.namespace
-            )}'. Please check that the namespace is correct.\nTry running the following command:\n${canICreateRoleBinding.args.join(
-              " "
-            )}`
+            )}'. Please check that the namespace is correct.\nTry running the following command:\n${canICreateRoleBinding.args &&
+              canICreateRoleBinding.args.join(" ")}`
           );
         }
         return answers;
       })
       .then(answers => {
-        const modules = this.answers.modules;
-        modules[moduleName] = Object.assign(modules[moduleName] || {}, {
-          namespace: answers.namespace
-        });
-        this.answers.modules = modules;
+        this.module.namespace = answers.namespace;
       });
 
     const gitHubSecret = spawnSync(
@@ -76,50 +75,54 @@ module.exports = class extends Generator {
           type: "password",
           name: "GH_PASSWORD",
           // eslint-disable-next-line prettier/prettier
-          message: "What is the personal access token for the GitHub account?\nSee https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line\n",
+          message: `What is the personal access token for the GitHub account?
+          See https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line
+          Required priveleges: public_repo, repo:status, repo_deployment, admin:repo_hook`
         }
       ]).then(answers => {
-        // oc new-app -f .jenkins/openshift/secrets.json -p GH_USERNAME=abc -p GH_PASSWORD=123 --dry-run -o yaml
         const ocSecrets = spawnSync(
           "oc",
           [ "process",
             "-n",
             this.module.namespace,
+            "new-app",
             "-f",
-            `${this.templatePath(".jenkins")}/openshift/secrets.json`,
-            "-p",
-            `GH_USERNAME=${answers.GH_USERNAME}`,
-            "-p",
-            `GH_PASSWORD=${answers.GH_PASSWORD}`
+            `${this.templatePath(".jenkins")}/openshift/deploy-prereq.yaml`,
+            `--param=GH_USERNAME=${answers.GH_USERNAME}`,
+            `--param=GH_ACCESS_TOKEN=${answers.GH_PASSWORD}`
           ],
           { encoding: "utf-8" }
         );
         if (ocSecrets.status !== 0) {
+          console.log(ocSecrets.args.join(" "));
+          console.log(ocSecrets.stdout);
+          console.log(ocSecrets.stderr);
           this.env.error("Error creating secrets.");
         }
       });
     }
   }
 
-  createJenkinsJob() {
-    this.composeWith(require.resolve("../jenkins-job"), {
-      module: moduleName,
-      name: "_jenkins",
-      jenkinsFilePath: `${moduleName}/Jenkinsfile`,
+  createJenkinsPipeline() {
+    Object.assign(this.module, { name: this.module.name || "jenkins" });
+    this.composeWith(require.resolve("../pipeline"), {
+      module: this.module,
       __answers: this.answers
     });
   }
 
-  createJenkinsPipeline() {
-    this.composeWith(require.resolve("../pipeline"), {
-      module: moduleName,
+  createJenkinsJob() {
+    this.composeWith(require.resolve("../jenkins-job"), {
+      module: this.module,
+      name: "_jenkins",
+      jenkinsFilePath: `${this.module.path}/Jenkinsfile`,
       __answers: this.answers
     });
   }
 
   createJenkinsOverwrites() {
     this.composeWith(require.resolve("../jenkins-overwrites"), {
-      path: moduleName,
+      path: this.module.path,
       __answers: this.answers
     });
   }
@@ -128,7 +131,7 @@ module.exports = class extends Generator {
     this.log("Writing 'jenkins' files.");
     this.fs.copy(
       this.templatePath(".jenkins"),
-      this.destinationPath(moduleName)
+      this.destinationPath(this.module.path)
     );
   }
 

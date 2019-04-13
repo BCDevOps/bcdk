@@ -118,12 +118,12 @@ module.exports = class extends Generator {
     this.log("Writing 'pipeline' files.");
     this.fs.copyTpl(
       this.templatePath(`.pipeline`),
-      this.destinationPath(`${this.options.module.path}/.pipeline`),
+      this.destinationPath(`${this.module.path}/.pipeline`),
       this.module
     );
     this.fs.copy(
       this.templatePath(`Jenkinsfile`),
-      this.destinationPath(`${this.options.module.path}/Jenkinsfile`)
+      this.destinationPath(`${this.module.path}/Jenkinsfile`)
     );
   }
 

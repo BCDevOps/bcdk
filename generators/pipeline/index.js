@@ -75,6 +75,18 @@ module.exports = class extends Generator {
       });
     }
 
+    await this.prompt([
+      {
+        type: "input",
+        name: "path",
+        // eslint-disable-next-line prettier/prettier
+        message: "What is the source code directory for this module?",
+        default: this.module.path || "."
+      }
+    ]).then(answers => {
+      this.module.path = answers.path;
+    });
+
     const environments = {};
     this.module.environments = this.module.environments || {};
     // eslint-disable-next-line prettier/prettier

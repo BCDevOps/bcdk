@@ -3,7 +3,7 @@ const options= require('pipeline-cli').Util.parseArguments()
 const changeId = options.pr //aka pull-request
 const version = '<%= version%>'
 const name = '<%= name%>'
-// <%= environments.build.namespace%>
+
 const phases = {
   <%_ Object.keys(environments).forEach(function(envName){ _%>
   <%_ if (envName === "prod" || envName === "test") { _%>

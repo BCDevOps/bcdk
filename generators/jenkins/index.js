@@ -82,7 +82,7 @@ module.exports = class extends Generator {
       ]).then(answers => {
         const ocSecrets = spawnSync(
           "oc",
-          [
+          [ "process",
             "-n",
             this.module.namespace,
             "new-app",

@@ -95,7 +95,7 @@ module.exports = class extends Generator {
     // eslint-disable-next-line prettier/prettier
     this.options.environments.trim().split(" ")
       .forEach(item => {
-        environments[item] = this.module.environments[item] || {};
+        environments[item] = (this.module.environments) ? this.module.environments[item] : {}  
       });
     this.module.environments = environments;
 

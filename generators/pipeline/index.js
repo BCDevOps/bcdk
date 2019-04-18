@@ -112,6 +112,7 @@ module.exports = class extends Generator {
 
     await this.prompt(prompts).then(answers => {
       Object.keys(answers).forEach(item => {
+        environments[item] = environments[item] || {};
         environments[item].namespace = answers[item];
       });
     });

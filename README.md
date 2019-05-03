@@ -19,7 +19,7 @@ You will need to login to openshift, with enough permissions to administer your 
 * npm
 
 ```sh
-npm i yeoman -g
+npm i yo -g
 ```
 
 TODO: Consider using [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) since it will install Yeoman if it doesn't exist.

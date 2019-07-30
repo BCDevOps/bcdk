@@ -54,6 +54,16 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    // eslint-disable-next-line prettier/prettier
+    this._createDirIfMissing(`${this.module.path}/${this.component.name}-main/requirements.txt`)
+    // eslint-disable-next-line prettier/prettier
+    this._createDirIfMissing(`${this.module.path}/${this.component.name}-base/requirements.txt`)
+    // eslint-disable-next-line prettier/prettier
+    this._createIfMissing(`${this.module.path}/${this.component.name}-main/requirements.txt`);
+    this._symLink(
+      `${this.module.path}/${this.component.name}-main/requirements.txt`,
+      `${this.module.path}/${this.component.name}-base/requirements.txt`
+    );
     this.fs.copy(
       this.templatePath("main"),
       this.destinationPath(`${this.module.path}/${this.component.name}-main`)
@@ -62,11 +72,6 @@ module.exports = class extends Generator {
       this.templatePath("base"),
       this.destinationPath(`${this.module.path}/${this.component.name}-base`)
     );
-    this._symLink(
-      `${this.module.path}/${this.component.name}-main/requirements.txt`,
-      `${this.module.path}/${this.component.name}-base/requirements.txt`
-    );
-
     this.fs.copy(
       this.templatePath("openshift"),
       this.destinationPath(`openshift`)

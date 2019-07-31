@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
-const Generator = require('../AbstractGenerator');
+const Generator = require("../AbstractGenerator");
 
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     // this.option("module", { type: String, required: false, desc: "My option" });
-    this.option('environments', {
+    this.option("environments", {
       type: String,
       required: false,
       // eslint-disable-next-line prettier/prettier
       desc: "Environment names (E.g. build, dev, test, prod) separated by space."
     });
     // the name of the generator
-    this.name = 'default';
+    this.name = "default";
 
     if (opts.module) {
       this.module = opts.module;
@@ -25,11 +25,11 @@ module.exports = class extends Generator {
       if (!this.options.module) {
         await this.prompt([
           {
-            type: 'input',
-            name: 'module',
+            type: "input",
+            name: "module",
             // eslint-disable-next-line prettier/prettier
             message: "What is this module id/key?",
-            default: 'hello',
+            default: "hello",
           },
         ]).then(answers => {
           this.options.module = answers.module;
@@ -41,18 +41,18 @@ module.exports = class extends Generator {
 
     await this.prompt([
       {
-        type: 'input',
-        name: 'name',
+        type: "input",
+        name: "name",
         // eslint-disable-next-line prettier/prettier
         message: "What is this module name?",
         default: this.module.name || this.options.name,
       },
       {
-        type: 'input',
-        name: 'version',
+        type: "input",
+        name: "version",
         // eslint-disable-next-line prettier/prettier
         message: "What is this module version?",
-        default: this.module.version || this.options.version || '1.0.0',
+        default: this.module.version || this.options.version || "1.0.0",
       },
     ]).then(answers => {
       this.module.name = answers.name;
@@ -60,14 +60,14 @@ module.exports = class extends Generator {
     });
 
     if (!this.options.environments) {
-      let defaultEnvironments = 'build dev test prod';
+      let defaultEnvironments = "build dev test prod";
       if (this.module.environments) {
-        defaultEnvironments = Object.keys(this.module.environments).join(' ');
+        defaultEnvironments = Object.keys(this.module.environments).join(" ");
       }
       await this.prompt([
         {
-          type: 'input',
-          name: 'environments',
+          type: "input",
+          name: "environments",
           // eslint-disable-next-line prettier/prettier
           message: "What environments are supported by your app? separated by space",
           default: defaultEnvironments,
@@ -79,11 +79,11 @@ module.exports = class extends Generator {
 
     await this.prompt([
       {
-        type: 'input',
-        name: 'path',
+        type: "input",
+        name: "path",
         // eslint-disable-next-line prettier/prettier
         message: "What is the source code directory for this module?",
-        default: this.module.path || '.',
+        default: this.module.path || ".",
       },
     ]).then(answers => {
       this.module.path = answers.path;
@@ -101,7 +101,7 @@ module.exports = class extends Generator {
     const prompts = [];
     Object.keys(environments).forEach(item => {
       prompts.push({
-        type: 'input',
+        type: "input",
         name: `${item.trim()}`,
         message: `What namespace/project name is used for '${item.trim()}?'`,
         // eslint-disable-next-line prettier/prettier
@@ -136,9 +136,7 @@ module.exports = class extends Generator {
   }
 
   end() {
-    this._setExecutable(
-      this.destinationPath(`${this.module.path}/.pipeline/npmw`)
-    );
+    this._setExecutable(this.destinationPath(`${this.module.path}/.pipeline/npmw`));
     this._savePrompts();
   }
 };

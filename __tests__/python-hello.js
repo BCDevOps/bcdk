@@ -6,11 +6,9 @@ const helpers = require("yeoman-test");
 
 describe("generator-bcdk:python-hello", () => {
   beforeAll(() => {
-    return helpers
-      .run(path.join(__dirname, "../generators/python-hello"))
-      .withPrompts({
-        someAnswer: true
-      });
+    return helpers.run(path.join(__dirname, "../generators/python-hello")).withPrompts({
+      someAnswer: true,
+    });
   });
 
   it("creates files", () => {

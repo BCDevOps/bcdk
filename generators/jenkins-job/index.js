@@ -12,7 +12,7 @@ module.exports = class extends Generator {
     this.option("jenkinsFilePath", {
       type: String,
       required: false,
-      desc: "My option"
+      desc: "My option",
     });
     if (opts.module) {
       this.module = opts.module;
@@ -27,8 +27,8 @@ module.exports = class extends Generator {
             type: "input",
             name: "module",
             message: "Module name?",
-            default: "."
-          }
+            default: ".",
+          },
         ]).then(answers => {
           this.options.module = answers.module;
         });
@@ -44,17 +44,17 @@ module.exports = class extends Generator {
           type: "input",
           name: "job",
           message: "Jenkins Job name?",
-          default: this.module.jenkinsJobName || ""
-        }
+          default: this.module.jenkinsJobName || "",
+        },
       ]).then(answers => {
         this.options.name = answers.job;
         this.answers.modules[this.options.module] = Object.assign(this.module, {
-          jenkinsJobName: this.options.name
+          jenkinsJobName: this.options.name,
         });
       });
     } else {
       Object.assign(this.module, {
-        jenkinsJobName: this.options.name
+        jenkinsJobName: this.options.name,
       });
     }
 
@@ -64,13 +64,13 @@ module.exports = class extends Generator {
         name: "github_owner",
         // eslint-disable-next-line prettier/prettier
         message: "What is the GitHub organization where the repository is located?",
-        default: this.module.github_owner || "bcgov"
+        default: this.module.github_owner || "bcgov",
       },
       {
         type: "input",
         name: "github_repo",
         message: "What is the repository's name?",
-        default: this.module.github_repo || "myrepo"
+        default: this.module.github_repo || "myrepo",
       },
       {
         type: "input",
@@ -78,7 +78,7 @@ module.exports = class extends Generator {
         message: "What is the Jenkinsfile path?",
         // eslint-disable-next-line prettier/prettier
         default: this.module.jenkinsFilePath || this.options.jenkinsFilePath || "Jenkinsfile"
-      }
+      },
     ]).then(_props => {
       Object.assign(this.module, _props);
       if (!this.module.uuid) {
@@ -90,15 +90,9 @@ module.exports = class extends Generator {
   writing() {
     this.log("Writing 'jenkins-job' files.");
     var destinationConfigXml = this.destinationPath(
-      `.jenkins/docker/contrib/jenkins/configuration/jobs/${
-        this.module.jenkinsJobName
-      }/config.xml`
+      `.jenkins/docker/contrib/jenkins/configuration/jobs/${this.module.jenkinsJobName}/config.xml`,
     );
-    this.fs.copyTpl(
-      this.templatePath("config.xml"),
-      destinationConfigXml,
-      this.module
-    );
+    this.fs.copyTpl(this.templatePath("config.xml"), destinationConfigXml, this.module);
   }
 
   end() {

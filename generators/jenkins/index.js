@@ -11,7 +11,7 @@ module.exports = class extends Generator {
     // eslint-disable-next-line no-negated-condition
     if (whoAmI.status !== 0) {
       this.env.error(
-        `You are not authenticated in an OpenShift cluster. Please run 'oc login ...' command`
+        `You are not authenticated in an OpenShift cluster. Please run 'oc login ...' command`,
       );
     } else {
       this.log(`You are authenticated in OpenShift as ${whoAmI.stdout}`);
@@ -28,21 +28,21 @@ module.exports = class extends Generator {
         message: "What is your openshift 'tools' namespace name?",
         // eslint-disable-next-line prettier/prettier
         default: this.module.namespace || ""
-      }
+      },
     ])
       .then(answers => {
         const canICreateRoleBinding = spawnSync(
           "oc",
           ["-n", answers.namespace, "auth", "can-i", "create", "rolebinding"],
-          { encoding: "utf-8" }
+          { encoding: "utf-8" },
         );
 
         if (canICreateRoleBinding.status !== 0) {
           this.env.error(
             `It seems like you do not have admin privilege in the project '${chalk.red(
-              answers.namespace
+              answers.namespace,
             )}'. Please check that the namespace is correct.\nTry running the following command:\n${canICreateRoleBinding.args &&
-              canICreateRoleBinding.args.join(" ")}`
+              canICreateRoleBinding.args.join(" ")}`,
           );
         }
         return answers;
@@ -58,9 +58,9 @@ module.exports = class extends Generator {
         this.module.namespace,
         "get",
         "secret/template.jenkins-github",
-        "secret/template.jenkins-slave-user"
+        "secret/template.jenkins-slave-user",
       ],
-      { encoding: "utf-8" }
+      { encoding: "utf-8" },
     );
     if (gitHubSecret.status !== 0) {
       this.log(`One or more required secrets are missing.`);
@@ -77,8 +77,8 @@ module.exports = class extends Generator {
           // eslint-disable-next-line prettier/prettier
           message: `What is the personal access token for the GitHub account?
           See https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line
-          Required priveleges: public_repo, repo:status, repo_deployment, admin:repo_hook`
-        }
+          Required priveleges: public_repo, repo:status, repo_deployment, admin:repo_hook`,
+        },
       ]).then(answers => {
         const ocSecrets = spawnSync(
           "oc",
@@ -89,9 +89,9 @@ module.exports = class extends Generator {
             "-f",
             `${this.templatePath(".jenkins")}/openshift/deploy-prereq.yaml`,
             `--param=GH_USERNAME=${answers.GH_USERNAME}`,
-            `--param=GH_ACCESS_TOKEN=${answers.GH_PASSWORD}`
+            `--param=GH_ACCESS_TOKEN=${answers.GH_PASSWORD}`,
           ],
-          { encoding: "utf-8" }
+          { encoding: "utf-8" },
         );
         if (ocSecrets.status !== 0) {
           console.log(ocSecrets.args.join(" "));
@@ -107,7 +107,7 @@ module.exports = class extends Generator {
     Object.assign(this.module, { name: this.module.name || "jenkins" });
     this.composeWith(require.resolve("../pipeline"), {
       module: this.module,
-      __answers: this.answers
+      __answers: this.answers,
     });
   }
 
@@ -116,23 +116,20 @@ module.exports = class extends Generator {
       module: this.module,
       name: "_jenkins",
       jenkinsFilePath: `${this.module.path}/Jenkinsfile`,
-      __answers: this.answers
+      __answers: this.answers,
     });
   }
 
   createJenkinsOverwrites() {
     this.composeWith(require.resolve("../jenkins-overwrites"), {
       path: this.module.path,
-      __answers: this.answers
+      __answers: this.answers,
     });
   }
 
   writing() {
     this.log("Writing 'jenkins' files.");
-    this.fs.copy(
-      this.templatePath(".jenkins"),
-      this.destinationPath(this.module.path)
-    );
+    this.fs.copy(this.templatePath(".jenkins"), this.destinationPath(this.module.path));
   }
 
   end() {

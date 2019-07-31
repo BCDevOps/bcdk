@@ -12,11 +12,11 @@ module.exports = class extends Generator {
     this.log(`Writing 'jenkins-overwrites' files.`);
     this.fs.copy(
       this.templatePath(".jenkins/.pipeline/lib"),
-      this.destinationPath(`${this.options.path}/.pipeline/lib`)
+      this.destinationPath(`${this.options.path}/.pipeline/lib`),
     );
     this.fs.copy(
       this.templatePath(".jenkins/Jenkinsfile"),
-      this.destinationPath(`${this.options.path}/Jenkinsfile`)
+      this.destinationPath(`${this.options.path}/Jenkinsfile`),
     );
   }
 

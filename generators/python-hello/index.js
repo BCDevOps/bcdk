@@ -11,9 +11,7 @@ module.exports = class extends Generator {
 
   async prompting() {
     // Have Yeoman greet the user.
-    this.log(
-      yosay(`Welcome to the doozie ${chalk.red("generator-bcdk")} generator!`)
-    );
+    this.log(yosay(`Welcome to the doozie ${chalk.red("generator-bcdk")} generator!`));
 
     await this.prompt([
       {
@@ -22,7 +20,7 @@ module.exports = class extends Generator {
         message: "What module this component will belong to?",
         // eslint-disable-next-line prettier/prettier
         default: "main"
-      }
+      },
     ]).then(answers => {
       this._module(answers.name);
     });
@@ -34,7 +32,7 @@ module.exports = class extends Generator {
         message: "What module root path?",
         // eslint-disable-next-line prettier/prettier
         default: this.module.path || "."
-      }
+      },
     ]).then(answers => {
       this.module.path = answers.path;
     });
@@ -44,8 +42,8 @@ module.exports = class extends Generator {
         type: "input",
         name: "name",
         message: "What do you want to call this component?",
-        default: "hello"
-      }
+        default: "hello",
+      },
     ]).then(answers => {
       this.component = this._component(answers.name);
     });
@@ -54,23 +52,20 @@ module.exports = class extends Generator {
   createPipeline() {
     this.composeWith(require.resolve("../pipeline"), {
       module: this.module,
-      __answers: this.answers
+      __answers: this.answers,
     });
   }
 
   writing() {
     this.fs.copy(
       this.templatePath("main"),
-      this.destinationPath(`${this.module.path}/${this.component.name}-main`)
+      this.destinationPath(`${this.module.path}/${this.component.name}-main`),
     );
     this.fs.copy(
       this.templatePath("base"),
-      this.destinationPath(`${this.module.path}/${this.component.name}-base`)
+      this.destinationPath(`${this.module.path}/${this.component.name}-base`),
     );
-    this.fs.copy(
-      this.templatePath("openshift"),
-      this.destinationPath(`openshift`)
-    );
+    this.fs.copy(this.templatePath("openshift"), this.destinationPath(`openshift`));
 
     /*
     this.fs.copyTpl(
@@ -94,7 +89,7 @@ module.exports = class extends Generator {
 
     this._symLink(
       `${this.module.path}/${this.component.name}-main/requirements.txt`,
-      `${this.module.path}/${this.component.name}-base/requirements.txt`
+      `${this.module.path}/${this.component.name}-base/requirements.txt`,
     );
   }
 

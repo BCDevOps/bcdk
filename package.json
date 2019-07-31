@@ -29,7 +29,7 @@
     "yeoman-test": "^1.7.0"
   },
   "engines": {
-    "npm": ">= 4.0.0"
+    "npm": ">= 10.0.0"
   },
   "dependencies": {
     "chalk": "^2.1.0",
@@ -57,6 +57,7 @@
     ]
   },
   "scripts": {
+    "lint": "eslint .",
     "_pretest": "eslint .",
     "test": "jest"
   },

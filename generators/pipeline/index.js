@@ -16,7 +16,6 @@ module.exports = class extends Generator {
     this.name = "default";
 
     if (opts.module) {
-      console.log("Setting module");
       this.module = opts.module;
     }
   }

@@ -9,7 +9,7 @@ objects:
     creationTimestamp: null
     labels:
       shared: "true"
-    name: python-36-rhel7
+    name: rhscl-python-36-rhel7
   spec:
     lookupPolicy:
       local: false

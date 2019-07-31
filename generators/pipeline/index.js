@@ -125,6 +125,10 @@ module.exports = class extends Generator {
       this.module,
     );
     this.fs.copy(
+      this.templatePath(`.pipeline/.nvmrc`),
+      this.destinationPath(`${this.module.path}/.pipeline/.nvmrc`),
+    );
+    this.fs.copy(
       this.templatePath(`Jenkinsfile`),
       this.destinationPath(`${this.module.path}/Jenkinsfile`),
     );

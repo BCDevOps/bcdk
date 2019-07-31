@@ -132,8 +132,8 @@ module.exports = class extends Generator {
   }
 
   installingPackages() {
-    this.log('Installing Node Modules');
-    this.npmInstall([], {}, { cwd: `${this.options.module.path}/.pipeline` });
+    this.log(`Installing Node Modules in ${this.module.path}/.pipeline`);
+    this.npmInstall([], {}, { cwd: `${this.module.path}/.pipeline` });
   }
 
   end() {

@@ -4,6 +4,11 @@ const chalk = require("chalk");
 const yosay = require("yosay");
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+    this.on("", () => {});
+  }
+
   async prompting() {
     // Have Yeoman greet the user.
     this.log(
@@ -54,16 +59,6 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    // eslint-disable-next-line prettier/prettier
-    this._createDirIfMissing(`${this.module.path}/${this.component.name}-main/requirements.txt`)
-    // eslint-disable-next-line prettier/prettier
-    this._createDirIfMissing(`${this.module.path}/${this.component.name}-base/requirements.txt`)
-    // eslint-disable-next-line prettier/prettier
-    this._createIfMissing(`${this.module.path}/${this.component.name}-main/requirements.txt`);
-    this._symLink(
-      `${this.module.path}/${this.component.name}-main/requirements.txt`,
-      `${this.module.path}/${this.component.name}-base/requirements.txt`
-    );
     this.fs.copy(
       this.templatePath("main"),
       this.destinationPath(`${this.module.path}/${this.component.name}-main`)
@@ -96,9 +91,23 @@ module.exports = class extends Generator {
       this.props
     );
     */
+
+    this._symLink(
+      `${this.module.path}/${this.component.name}-main/requirements.txt`,
+      `${this.module.path}/${this.component.name}-base/requirements.txt`
+    );
   }
 
   end() {
+    // eslint-disable-next-line prettier/prettier
+    this.log(`end - ${this.destinationPath(`${this.module.path}/${this.component.name}-main/requirements.txt`)}`);
+    // eslint-disable-next-line prettier/prettier
+    // this._createDirIfMissing(this.destinationPath(`${this.module.path}/${this.component.name}-main/requirements.txt`));
+    // eslint-disable-next-line prettier/prettier
+    // this._createDirIfMissing(this.destinationPath(`${this.module.path}/${this.component.name}-base/requirements.txt`));
+    // eslint-disable-next-line prettier/prettier
+    // this._createIfMissing(this.destinationPath(`${this.module.path}/${this.component.name}-main/requirements.txt`));
+
     this.log("Don't forget to update:");
     // eslint-disable-next-line prettier/prettier
     this.log(`1) '.pipeline/lib/config.js'. See '.pipeline/examples/${this.component.name}/config.js' for an example.`);

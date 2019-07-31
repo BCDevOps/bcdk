@@ -131,12 +131,15 @@ module.exports = class extends Generator {
     );
   }
 
-  installingPackages() {
+  install() {
     this.log(`Installing Node Modules in ${this.module.path}/.pipeline`);
     this.npmInstall([], {}, { cwd: `${this.module.path}/.pipeline` });
   }
 
   end() {
+    this._setExecutable(
+      this.destinationPath(`${this.module.path}/.pipeline/npmw`)
+    );
     this._savePrompts();
   }
 };

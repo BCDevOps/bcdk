@@ -2,6 +2,7 @@
 const Generator = require("yeoman-generator");
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -17,9 +18,26 @@ module.exports = class extends Generator {
     }
     this.props = {};
     if (!fs.existsSync(".git/objects")) {
-      // eslint-disable-next-line prettier/prettier
-      this.log.error("It looks like you are not running from the root of a git working directory (Missing .git/objects)");
-      process.exit(1);
+      this.env.error(
+        "It looks like you are not running from the root of a git working directory (Missing .git/objects)",
+      );
+    }
+    const whoAmI = spawnSync("oc", ["whoami"], { encoding: "utf-8" });
+    // eslint-disable-next-line no-negated-condition
+    if (whoAmI.status !== 0) {
+      this.env.error(
+        `You are not authenticated in an OpenShift cluster.\nPlease run 'oc login ...' command copied from the Web Console:\nhttps://console.pathfinder.gov.bc.ca:8443/console/command-line\n`,
+      );
+    } else {
+      this.log(`You are authenticated in OpenShift as ${whoAmI.stdout}`);
+    }
+    const ocVersion = spawnSync("oc", ["version"], { encoding: "utf-8" });
+    const ocVersionLabel = ocVersion.stdout.match(/oc v\d+\.\d+/gm)[0].substring(3);
+    const openshiftVersionLabel = ocVersion.stdout.match(/openshift v\d+\.\d+/gm)[0].substring(10);
+    if (ocVersionLabel != openshiftVersionLabel) {
+      this.env.error(
+        `Your oc client version (${ocVersionLabel}) does not match the server version (${openshiftVersionLabel}).\nPlease get your client to align with the server version.\nYou can download it from:\nhttps://github.com/openshift/origin/releases/tag/${openshiftVersionLabel}.0`,
+      );
     }
   }
 

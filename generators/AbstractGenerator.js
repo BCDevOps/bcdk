@@ -16,6 +16,11 @@ module.exports = class extends Generator {
       this.config.set("promptValues", this.answers);
     }
     this.props = {};
+    if (!fs.existsSync(".git/objects")) {
+      // eslint-disable-next-line prettier/prettier
+      this.log.error("It looks like you are not running from the root of a git working directory (Missing .git/objects)");
+      process.exit(1);
+    }
   }
 
   /*   emit(event, ...args) {

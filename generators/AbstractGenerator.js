@@ -28,8 +28,6 @@ module.exports = class extends Generator {
       this.env.error(
         `You are not authenticated in an OpenShift cluster.\nPlease run 'oc login ...' command copied from the Web Console:\nhttps://console.pathfinder.gov.bc.ca:8443/console/command-line\n`,
       );
-    } else {
-      this.log(`You are authenticated in OpenShift as ${whoAmI.stdout}`);
     }
     const ocVersion = spawnSync("oc", ["version"], { encoding: "utf-8" });
     const ocVersionLabel = ocVersion.stdout.match(/oc v\d+\.\d+/gm)[0].substring(3);

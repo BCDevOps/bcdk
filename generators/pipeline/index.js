@@ -77,6 +77,8 @@ module.exports = class extends Generator {
       ]).then(answers => {
         this.options.environments = answers.environments;
       });
+    } else {
+      this.log(`Environments: ${this.options.environments}`);
     }
 
     await this.prompt([
@@ -99,13 +101,20 @@ module.exports = class extends Generator {
         environments[item] = this.module.environments ? this.module.environments[item] : {};
       });
     this.module.environments = environments;
-
+    if (
+      !Object.keys(environments).includes("build") ||
+      !Object.keys(environments).includes("prod")
+    ) {
+      this.env.error(
+        `'build' and 'prod' environments are mandatory, but you provided "${this.options.environments.trim()}"`,
+      );
+    }
     const prompts = [];
     Object.keys(environments).forEach(item => {
       prompts.push({
         type: "input",
         name: `${item.trim()}`,
-        message: `What namespace/project name is used for '${item.trim()}?'`,
+        message: `What namespace/project name is used for '${item.trim()}'?`,
         // eslint-disable-next-line prettier/prettier
         default: (environments[item.trim()] || {}).namespace || this.module.namespace || ""
       });

@@ -7,16 +7,6 @@ const moduleName = "jenkins";
 
 module.exports = class extends Generator {
   async prompting() {
-    const whoAmI = spawnSync("oc", ["whoami"], { encoding: "utf-8" });
-    // eslint-disable-next-line no-negated-condition
-    if (whoAmI.status !== 0) {
-      this.env.error(
-        `You are not authenticated in an OpenShift cluster. Please run 'oc login ...' command`,
-      );
-    } else {
-      this.log(`You are authenticated in OpenShift as ${whoAmI.stdout}`);
-    }
-
     this.module = this.answers.modules[moduleName] || {};
     this.answers.modules[moduleName] = this.module;
     this.module.path = ".jenkins";
@@ -108,6 +98,7 @@ module.exports = class extends Generator {
     this.composeWith(require.resolve("../pipeline"), {
       module: this.module,
       __answers: this.answers,
+      environments: "build dev prod",
     });
   }
 

@@ -1,5 +1,7 @@
 "use strict";
 
+const { createReadStream, existsSync, readFileSync } = require("fs");
+const readline = require("readline");
 const Generator = require("../AbstractGenerator");
 
 module.exports = class extends Generator {
@@ -117,7 +119,7 @@ module.exports = class extends Generator {
     });
   }
 
-  writing() {
+  async writing() {
     this.log("Writing 'pipeline' files.");
     this.fs.copyTpl(
       this.templatePath(`.pipeline`),
@@ -132,6 +134,37 @@ module.exports = class extends Generator {
       this.templatePath(`Jenkinsfile`),
       this.destinationPath(`${this.module.path}/Jenkinsfile`),
     );
+    const dstDotGitIgnore = this.destinationPath(`.gitignore`);
+    if (existsSync(dstDotGitIgnore)) {
+      const reader = readline.createInterface({
+        input: createReadStream(dstDotGitIgnore),
+        crlfDelay: Infinity,
+        terminal: false,
+      });
+      let foundNodeModulesEntry = false;
+      await new Promise(resolve => {
+        reader.on("line", line => {
+          foundNodeModulesEntry =
+            line.startsWith("node_modules/") || line.startsWith("**/node_modules/");
+          if (foundNodeModulesEntry) {
+            reader.close();
+          }
+        });
+        reader.on("close", () => {
+          resolve(true);
+        });
+      });
+      if (!foundNodeModulesEntry) {
+        let content = readFileSync(dstDotGitIgnore, { encoding: "utf8" });
+        if (content.charAt(content.length - 1) != "\n") {
+          content += "\n";
+        }
+        content += "node_modules/\n";
+        this.fs.write(dstDotGitIgnore, content);
+      }
+    } else {
+      this.fs.write(dstDotGitIgnore, "node_modules/\n");
+    }
   }
 
   install() {

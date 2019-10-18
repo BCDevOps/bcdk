@@ -3,13 +3,14 @@
 const Generator = require("../AbstractGenerator");
 const chalk = require("chalk");
 const { spawnSync } = require("child_process");
-const moduleName = "jenkins";
+const moduleId = "jenkins";
 
 module.exports = class extends Generator {
   async prompting() {
-    this.module = this.answers.modules[moduleName] || {};
-    this.answers.modules[moduleName] = this.module;
+    this.module = this.answers.modules[moduleId] || {};
+    this.answers.modules[moduleId] = this.module;
     this.module.path = ".jenkins";
+    this.module.name = this.module.name || "jenkins";
 
     await this.prompt([
       {
@@ -41,14 +42,16 @@ module.exports = class extends Generator {
         this.module.namespace = answers.namespace;
       });
 
+    await this._promptModuleName();
+
     const gitHubSecret = spawnSync(
       "oc",
       [
         "-n",
         this.module.namespace,
         "get",
-        "secret/template.jenkins-github",
-        "secret/template.jenkins-slave-user",
+        `secret/template.${this.module.name}-github`,
+        `secret/template.${this.module.name}-slave-user`,
       ],
       { encoding: "utf-8" },
     );
@@ -78,6 +81,7 @@ module.exports = class extends Generator {
             "new-app",
             "-f",
             `${this.templatePath(".jenkins")}/openshift/deploy-prereq.yaml`,
+            `--param=NAME=${this.module.name}`,
             `--param=GH_USERNAME=${answers.GH_USERNAME}`,
             `--param=GH_ACCESS_TOKEN=${answers.GH_PASSWORD}`,
           ],
@@ -94,7 +98,7 @@ module.exports = class extends Generator {
   }
 
   createJenkinsPipeline() {
-    Object.assign(this.module, { name: this.module.name || "jenkins" });
+    //Object.assign(this.module, { name: this.module.name || "jenkins" });
     this.composeWith(require.resolve("../pipeline"), {
       module: this.module,
       __answers: this.answers,

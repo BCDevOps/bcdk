@@ -188,4 +188,26 @@ module.exports = class extends Generator {
     this.config.set("promptValues", this.answers);
     this.config.save();
   }
+
+  _promptModuleName() {
+    if (this.options.module) {
+      return new Promise(resolve => {
+        //this.module.name = this.options.name;
+        resolve(this.module);
+      });
+    }
+
+    return this.prompt([
+      {
+        type: "input",
+        name: "name",
+        // eslint-disable-next-line prettier/prettier
+        message: "What is this module name?",
+        default: this.module.name || this.options.name,
+      },
+    ]).then(answers => {
+      this.module.name = answers.name;
+      return this.module;
+    });
+  }
 };

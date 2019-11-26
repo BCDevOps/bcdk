@@ -6,7 +6,7 @@ BC Developer Kit
 ### notes
 This version uses BCDevOps/pipeline-cli v1.1 [link](https://github.com/BCDevOps/pipeline-cli/releases/tag/v1.1). 
 
-The jenkins image(s)/scripts are from BCDevOps/openshift-components/.jenkins [link](https://github.com/BCDevOps/openshift-components/tree/cvarjao-update-jenkins-basic/.jenkins). 
+The jenkins image(s)/scripts are from BCDevOps/openshift-components/.jenkins [link](https://github.com/BCDevOps/openshift-components/tree/master/.jenkins). 
 
 The generators expect you to be logged into your openshift environment.  
 

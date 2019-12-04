@@ -35,13 +35,10 @@ objects:
         memory: 1Gi
     runPolicy: SerialLatestOnly
     source:
-#      contextDir: ${SOURCE_CONTEXT_DIR}
-#      git:
-#        ref: ${SOURCE_GIT_REF}
-#        uri: ${SOURCE_GIT_URL}
-#      type: Git
       dockerfile: |
         FROM BuildConfig
+        ARG NODE_VERSION=v10.16.0
+        ARG SONAR_VERSION=3.3.0.1492
         USER 0
         RUN fix_permission(){ while [[ $# > 0 ]] ; do chgrp -R 0 "$1" && chmod -R g=u "$1"; shift; done } && \
             set -x && \
@@ -51,13 +48,17 @@ objects:
             mkdir /opt/liquibase && \
             curl -sSL https://github.com/liquibase/liquibase/releases/download/liquibase-parent-3.6.3/liquibase-3.6.3-bin.tar.gz | tar xvz -C /opt/liquibase --exclude=sdk --exclude=liquibase.bat && \
             ln -s /opt/liquibase/liquibase /usr/local/bin && \
-            curl -sSL -o /tmp/sonnar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip && \
-            unzip /tmp/sonnar-scanner-cli.zip -d /tmp/sonnar-scanner-cli && \
-            mv /tmp/sonnar-scanner-cli/sonar-scanner-3.3.0.1492-linux /opt/sonnar-scanner && \
-            ln -s /opt/sonnar-scanner/bin/sonar-scanner /usr/local/bin && \
-            rm -rf /tmp/sonnar-scanner-cli.zip && \
-            rm -rf /tmp/sonnar-scanner-cli && \
-            fix_permission '/opt/flywaydb' '/opt/liquibase' '/opt/sonnar-scanner'
+            curl -sSL -o /tmp/sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_VERSION}-linux.zip && \
+            unzip /tmp/sonar-scanner-cli.zip -d /tmp/sonar-scanner-cli && \
+            mv /tmp/sonar-scanner-cli/sonar-scanner-${SONAR_VERSION}-linux /opt/sonar-scanner && \
+            ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin && \
+            rm -rf /tmp/sonar-scanner-cli.zip && \
+            rm -rf /tmp/sonar-scanner-cli && \
+            curl -sSL https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz | tar -Jx -C /opt && \
+            mv /opt/node-${NODE_VERSION}-linux-x64 /opt/node && \
+            fix_permission '/opt/flywaydb' '/opt/liquibase' '/opt/sonnar-scanner' '/opt/node'
+        ENV NODE_HOME=/opt/node \
+            PATH=$PATH:/opt/node/bin
         USER 1001
       type: Dockerfile
     strategy:

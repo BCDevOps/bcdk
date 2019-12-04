@@ -5,6 +5,16 @@ metadata:
   name: jenkins
 objects:
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    labels:
+      shared: "true"
+    name: ${NAME}-slave-${SLAVE_NAME}
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     creationTimestamp: null
@@ -42,15 +52,11 @@ objects:
             /etc/hostname)" -master http://$JENKINS_MASTER_SERVICE:8080 -disableSslVerification
             -username  "$(cat /var/run/secrets/jenkins-slave-user/username)" -passwordFile
             /var/run/secrets/jenkins-slave-user/password -description "$(cat /etc/hostname)"
-            -executors ${SLAVE_EXECUTORS} -labels '${SLAVE_LABELS}' -mode
-            'normal' -retry 10 -tunnel $JENKINS_MASTER_SERVICE:50000 -disableClientsUniqueId
+            -executors ${SLAVE_EXECUTORS} -labels '${SLAVE_LABELS}' -mode 'normal'
+            -retry 10 -tunnel $JENKINS_MASTER_SERVICE:50000 -disableClientsUniqueId
           env:
           - name: JENKINS_MASTER_SERVICE
             value: ${NAME}${SUFFIX}
-          - name: JAVA_TOOL_OPTIONS
-            value: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
-              -XX:MaxRAMFraction=5 -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10
-              -XX:+UseParallelGC -XX:ParallelGCThreads=2
           - name: ENV_NAME
             value: ${ENV_NAME}
           - name: ENV_ID
@@ -128,7 +134,7 @@ objects:
           - init
         from:
           kind: ImageStreamTag
-          name: ${NAME}:${VERSION}
+          name: ${NAME}-slave-${SLAVE_NAME}:${VERSION}
       type: ImageChange
     - type: ConfigChange
 parameters:

@@ -32,7 +32,12 @@ npx yo bcdk:python-hello
 ### setup
 
 ```sh
-git clone https://github.com/BCDevOps/bcdk.git -b bugfix/0.0.2
+npm install @bcgov/bcdk@latest
+```
+
+If the above command gives you an error on Windows OS, you can manually link it using these commands.
+```sh
+git clone https://github.com/BCDevOps/bcdk.git -b <latest release branch>
 cd bcdk
 npm link
 ```
@@ -43,10 +48,13 @@ Move to a different directory outside of bcdk.
 
 * Replace `your-project` with whatever your project will be called.
 * Replace `app` with whatever bcdk template is to be used
-
+* Ensure you are logged into an Openshift cluster
 
 ```sh
-mkdir <your-project>
+// change directory to your existing project where you like to add the pipeline
+// OR create a new directory and initialize a repo
+
+mkdir <your-project> 
 cd <your-project>
 
 // list the generators
@@ -71,7 +79,11 @@ Module name has no purpose here, it's jenkins.
 
 You will need to be logged into openshift, and you will need your shared github account and token.  
 
+If you run this multiple times, you won't get all the prompts everytime, as your responses are saved in .yo-rc.json file.
+
+
 **What is your openshift 'tools' namespace name?** \<your-openshift-tools namespace\>  
+**Note: If you don't have a GitHub secret in the given namespace, you will be asked here
 **We will need a GitHub username. We strongly recommend creating an account shared with the team for CI/CD/Automation purposes.** this is the name of your team's shared github account  
 **What is the personal access token for the GitHub account?  
 See https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line** enter the token   
@@ -129,14 +141,85 @@ Will add a configured job to the .jenkins/.pipeline.
 
 see .jenkins/README  
 
-Note that when code is only local, this version of pipeline-cli will fail.  
+## Known Errors
+  
+### Error: Failed running 'git rev-parse HEAD:.jenkins/docker'  
 
+Note that when code is only local, this version of pipeline-cli will fail. To fix this, push your new branch to Github.
+```
 > /Users/jason/Projects/bcdk-demo/.jenkins/.pipeline/node_modules/pipeline-cli/lib/util.js:169
 >       throw new Error(`Failed running '${arguments[0]} ${arguments[1].join(" ")}' as it returned ${ret.status}`)
 >       ^
 > 
 > Error: Failed running 'git rev-parse HEAD:.jenkins/docker' as it returned 128
+```
+  
+### /bin/bash^M: bad interpreter: No such file or directory
 
+When deploying from local command-line, Windows users might get errors due to line endings. It is recommended to implement .gitattributes to get the same build experience when pushing local code (see more notes below) or building from github.
+```
+Starting container "405130899ca676333a38b97a06caf90bbe3a1cba858ea2044729f00adeac0401" ...
+/bin/sh: /tmp/scripts/assemble: /bin/bash^M: bad interpreter: No such file or directory
+```
+
+### error: .jenkins/.pipeline/npmw: cannot add to the index
+
+```
+D:\BCDevOps\bcgov-forks\agri-nmp>git update-index --chmod=+x D:\BCDevOps\bcgov-forks\agri-nmp\.jenkins\.pipeline\npmw
+error: .jenkins/.pipeline/npmw: cannot add to the index - missing --add option?
+fatal: Unable to process path .jenkins/.pipeline/npmw
+```
+First add and then update index
+```
+D:\BCDevOps\bcgov-forks\agri-nmp>git add --chmod=+x D:\BCDevOps\bcgov-forks\agri-nmp\.jenkins\.pipeline\npmw
+
+D:\BCDevOps\bcgov-forks\agri-nmp>git update-index --chmod=+x D:\BCDevOps\bcgov-forks\agri-nmp\.jenkins\.pipeline\npmw
+```
+
+
+## Deploy Jenkins to Minisift
+To deploy Jenkins to your minishift, you can replace `ROUTE_HOST` qualifier from `.pathfinder.gov.bc.ca` to you minishift in `.jenkins\.pipeline\lib\deploy.js`.  
+**Note that GitHub webook won't work for Minishift Jenkins.
+
+# Local Debugging
+Install npm in your .pipeline and you can use the two methods below to debug and directly deploy to Openshift bypassing Jenkins.
+
+## VSCode Debug Mode to test using local code
+Add the below to your launch.json and debug any commands in your .pipeline.
+```
+       {
+            "type": "node",
+            "request": "launch",
+            "name": "build",
+            "cwd":"${workspaceFolder}/.pipeline",
+            "program": "${workspaceFolder}/.pipeline/build.js",
+            "env": {"DEBUG":"*"},
+            "args": ["--pr=0","--dev-mode=true"],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "deploy to DEV env",
+            "cwd":"${workspaceFolder}/.pipeline",
+            "program": "${workspaceFolder}/.pipeline/deploy.js",
+            "env": {"DEBUG":"*"},
+            "args": ["--pr=0","--env=dev"],
+            "console": "integratedTerminal"
+        },
+
+```
+
+
+## Bypass Jenkins to deploy directly to Openshift
+Use --dev-mode=true to deploy your local code or omit it and code will be pulled from github
+
+```shS
+cd .pipeline
+npm run build -- --pr=407 --env=build --dev-mode=true
+npm run deploy -- --pr=407 --env=dev
+
+```
 
 ## License
 

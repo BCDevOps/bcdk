@@ -32,7 +32,12 @@ npx yo bcdk:python-hello
 ### setup
 
 ```sh
-git clone https://github.com/BCDevOps/bcdk.git -b <use the latest release branch>
+npm install @bcgov/bcdk@latest
+```
+
+If the above command gives you an error on Windows OS, you can manually link it using these commands.
+```sh
+git clone https://github.com/BCDevOps/bcdk.git -b <latest release branch>
 cd bcdk
 npm link
 ```

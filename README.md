@@ -181,10 +181,10 @@ D:\BCDevOps\bcgov-forks\agri-nmp>git update-index --chmod=+x D:\BCDevOps\bcgov-f
 To deploy Jenkins to your minishift, you can replace `ROUTE_HOST` qualifier from `.pathfinder.gov.bc.ca` to you minishift in `.jenkins\.pipeline\lib\deploy.js`.  
 **Note that GitHub webook won't work for Minishift Jenkins.
 
-# Local Debugging
+## Local Debugging
 Install npm in your .pipeline and you can use the two methods below to debug and directly deploy to Openshift bypassing Jenkins.
 
-## VSCode Debug Mode to test using local code
+### VSCode Debug Mode to test using local code
 Add the below to your launch.json and debug any commands in your .pipeline.
 ```
        {
@@ -219,6 +219,43 @@ cd .pipeline
 npm run build -- --pr=407 --env=build --dev-mode=true
 npm run deploy -- --pr=407 --env=dev
 
+```
+
+## Automatically Clean Up Pull Request Deployments
+The Github Webhook in Jenkins will execute the following clean command when a Pull Request is closed or merged.
+
+```
+npm run clean -- --env=transient --pr={pr-number}
+```
+
+To take advantage of this you can add `transient: true` property to your `phases` objects in `./pipeline/lib/config.js`
+
+For example, the `build` and `dev` keys in the `phases` object below both contain the `transient: true` property.  This will cause the Github Webhook script to automatically run the `clean.js` script on the `build` and `dev` environments when a pull request is closed or merged.
+```javascript
+const phases = {
+  build: {
+    namespace: "tools",
+    name: `${name}`,
+    phase: "build",
+    transient: true  // auto clean build
+  },
+  dev: {
+    namespace: "dev",
+    name: `${name}`,
+    phase: "dev",
+    transient: true  // auto clean dev
+  },
+  test: {
+    namespace: "test",
+    name: `${name}`,
+    phase: "test",
+  },
+  prod: {
+    namespace: "prod",
+    name: `${name}`,
+    phase: "prod",
+  }
+};
 ```
 
 ## License

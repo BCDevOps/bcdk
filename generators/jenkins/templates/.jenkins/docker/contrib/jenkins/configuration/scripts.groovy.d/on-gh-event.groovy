@@ -58,9 +58,9 @@ static Map exec(List args, File workingDirectory=null, Appendable stdout=null, A
                     println exec(['git', 'fetch', '--no-tags', payload.repository.clone_url, "+${sourceBranch}:PR-${payload.number}"], gitWorkDir)
                     println exec(['git', 'checkout', "PR-${payload.number}"] , gitWorkDir)
 
-                    String npmwPath = gitWorkDir.getAbsolutePath() + '/.pipeline/npmw'
-                    println exec([npmwPath, 'ci'])
-                    println exec([npmwPath, 'run', 'clean' ,'--' ,"--pr=${payload.number}", '--env=transient'])
+                    File pipelineWorkDir = new File("${gitWorkDir.getAbsolutePath()}/.pipeline")
+                    println exec(['./npmw', 'ci'], pipelineWorkDir)
+                    println exec(['./npmw', 'run', 'clean' ,'--' ,"--pr=${payload.number}", '--env=transient'], pipelineWorkDir)
                 }
             }else if ("issue_comment" == ghEventType){
                 def payload = new JsonSlurper().parseText(ghPayload)

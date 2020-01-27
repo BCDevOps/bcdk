@@ -14,6 +14,8 @@ You should have a shared/team github account that is a contributor to your proje
 
 You will need to login to openshift, with enough permissions to administer your projects.  This process will create a secret for your jenkins jobs to pull your code from github.  
 
+A documentation has been created when project [Zeva](https://github.com/bcgov/zeva/blob/master/openshift/README.md) adopted BCDK as their pull request based pipeline.  
+
 ### prerequisites
 
 * npm

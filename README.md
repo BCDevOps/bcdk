@@ -26,9 +26,9 @@ npm i yo -g
 
 TODO: Consider using [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) since it will install Yeoman if it doesn't exist.
 ```sh
-npx yo bcdk:jenkins
-npx yo bcdk:pipeline
-npx yo bcdk:python-hello
+npx yo @bcgov/bcdk:jenkins
+npx yo @bcgov/bcdk:pipeline
+npx yo @bcgov/bcdk:python-hello
 ```
 
 ### setup

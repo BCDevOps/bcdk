@@ -1,5 +1,5 @@
 {
-  "name": "@bcgov/bcdk",
+  "name": "@bcgov/generator-bcdk",
   "version": "0.0.3-0",
   "description": "BCGOV Developer Kit",
   "homepage": "https://developer.gov.bc.ca",

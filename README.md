@@ -34,7 +34,7 @@ npx yo bcdk:python-hello
 ### setup
 
 ```sh
-npm install @bcgov/generator-bcdk
+npm install @bcgov/generator-bcdk@latest
 ```
 
 If the above command gives you an error on Windows OS, you can manually link it using these commands.

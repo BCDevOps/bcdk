@@ -3,14 +3,19 @@ const path = require("path");
 const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
 
+jest.mock("fs");
+jest.useFakeTimers();
 describe("generator-bcdk:jenkins", () => {
-  beforeAll(() => {
-    return helpers
-      .run(path.join(__dirname, "../generators/jenkins"))
-      .withPrompts({ someAnswer: true });
+  beforeEach(() => {
+    require("fs").__setMockFiles([".git/objects/foo.txt"]);
   });
 
   it("creates files", () => {
-    assert.file(["dummyfile.txt"]);
+    helpers
+      .run(path.join(__dirname, "../generators/jenkins"))
+      .withPrompts({ someAnswer: true })
+      .then(() => {
+        assert.file(["dummyfile.txt"]);
+      });
   });
 });

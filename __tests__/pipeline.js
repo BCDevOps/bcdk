@@ -2,6 +2,7 @@
 const path = require("path");
 const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
+jest.useFakeTimers();
 
 describe("generator-bcdk:pipeline", () => {
   it("main at root", () => {

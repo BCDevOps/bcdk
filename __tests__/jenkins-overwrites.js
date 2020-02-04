@@ -4,6 +4,7 @@ const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
 
 jest.mock("fs");
+jest.useFakeTimers();
 
 describe("generator-bcdk:jenkins-overwrites", () => {
   beforeEach(() => {

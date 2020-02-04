@@ -1,5 +1,5 @@
 {
-  "generator-bcdk": {
+  "@bcgov/generator-bcdk": {
     "promptValues": {
       "environments": "build dev test prod"
     }

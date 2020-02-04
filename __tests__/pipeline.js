@@ -4,10 +4,8 @@ const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
 
 describe("generator-bcdk:pipeline", () => {
-  beforeAll(() => {});
-
   it("main at root", () => {
-    return helpers
+    helpers
       .run(path.join(__dirname, "../generators/pipeline"))
       .withPrompts({ name: "main" })
       .then(() => {
@@ -28,7 +26,7 @@ describe("generator-bcdk:pipeline", () => {
   });
 
   it("main at subfolder", () => {
-    return helpers
+    helpers
       .run(path.join(__dirname, "../generators/pipeline"))
       .withPrompts({ name: "hello", path: "hello" })
       .then(() => {

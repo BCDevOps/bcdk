@@ -21,3 +21,7 @@ jobs:
     - run: npm test
       env:
         CI: true
+    - run: npm link
+    - run: npm install -g yo
+    - run: yo @bcgov/bcdk --help
+      

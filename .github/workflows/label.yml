@@ -11,7 +11,7 @@ on: [pull_request]
 jobs:
   label:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     steps:
     - uses: actions/labeler@v2

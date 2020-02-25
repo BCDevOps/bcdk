@@ -50,15 +50,14 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix"
+      "eslint --ext .js --fix"
     ],
     "*.json": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "scripts": {
-    "lint": "eslint ./**/*",
+    "lint": "eslint \"generators/**/*.js\"",
     "_pretest": "eslint .",
     "test": "jest"
   },

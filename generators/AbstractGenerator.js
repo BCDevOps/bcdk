@@ -146,6 +146,7 @@ module.exports = class extends Generator {
   _forEachFile(dir, cb) {
     fs.readdir(dir, function(e, files) {
       if (e) {
+        // eslint-disable-next-line no-console
         console.log("Error: ", e);
         return;
       }
@@ -153,6 +154,7 @@ module.exports = class extends Generator {
         var fullPath = path.join(dir, file);
         fs.stat(fullPath, function(e, f) {
           if (e) {
+            // eslint-disable-next-line no-console
             console.log("Error: ", e);
             return;
           }

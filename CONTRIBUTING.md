@@ -21,9 +21,9 @@ The Branch naming pattern is `<prefix>/<name>`
 Give branches a prefix based on the task type. The following branch prefixes are supported:
 
 - `docs/<name>`: Used for any documentation change
-- `feat/<name>`: Used for adding enhancments/features
+- `feat/<name>`: Used for adding enhancements/features
 - `bug/<name>`: Fixes a bug
-- `chore/<name>`: A chore task such as upgrading dependancies, folder cleanup etc
+- `chore/<name>`: A chore task such as upgrading dependencies, folder cleanup etc
 
 Custom branch names are acceptable for larger integrations.
 

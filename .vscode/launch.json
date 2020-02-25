@@ -1,0 +1,42 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "bcdk:jenkins",
+      "program": "/Users/cvarjao/.nvm/versions/node/v8.15.0/lib/node_modules/yo/lib/cli.js",
+      "args": [
+        "bcdk:jenkins"
+      ],
+      "cwd": "/Users/cvarjao/Documents/GitHub/bcdevops/bcdk-test",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "bcdk:python-hello",
+      "program": "/Users/cvarjao/.nvm/versions/node/v8.15.0/lib/node_modules/yo/lib/cli.js",
+      "args": [
+        "bcdk:python-hello"
+      ],
+      "cwd": "/Users/cvarjao/Documents/GitHub/bcdevops/bcdk-test",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "/Users/cvarjao/.nvm/versions/node/v8.15.0/lib/node_modules/yo/lib/cli.js",
+      "cwd": "/Users/cvarjao/Documents/GitHub/bcdevops/bcdk-test",
+      "args": [
+        "bcdk:jenkins"
+      ]
+    }
+  ]
+}

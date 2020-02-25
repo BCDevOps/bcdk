@@ -1,0 +1,4 @@
+'task: documentation': 'docs/**'
+'task: enhancement': 'feat/**'
+'task: bug': 'bug/**'
+'task: chore': 'chore/**'

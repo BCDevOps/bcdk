@@ -88,9 +88,12 @@ module.exports = class extends Generator {
           { encoding: "utf-8" },
         );
         if (ocSecrets.status !== 0) {
+          // eslint-disable-next-line no-console
           console.log(ocSecrets.args.join(" "));
+          // eslint-disable-next-line no-console
           console.log(ocSecrets.stdout);
-          console.log(ocSecrets.stderr);
+          // eslint-disable-next-line no-console
+          consoles.log(ocSecrets.stderr);
           this.env.error("Error creating secrets.");
         }
       });

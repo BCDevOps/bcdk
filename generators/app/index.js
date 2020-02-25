@@ -24,6 +24,7 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    // eslint-disable-next-line no-console
     console.log(`path: ${this.destinationPath("dummyfile.txt")}`);
     this.fs.copy(this.templatePath("dummyfile.txt"), this.destinationPath("dummyfile.txt"));
   }

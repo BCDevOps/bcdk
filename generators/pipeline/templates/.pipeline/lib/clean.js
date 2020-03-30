@@ -86,7 +86,6 @@ module.exports = settings => {
           namespace: phase.namespace,
         });
         statefulsetPVCs.forEach(statefulsetPVC => {
-          console.log(statefulsetPVC.metadata.name);
           oc.delete([`pvc/${statefulsetPVC.metadata.name}`], {
             "ignore-not-found": "true",
             wait: "true",

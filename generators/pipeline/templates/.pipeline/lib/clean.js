@@ -58,6 +58,12 @@ module.exports = settings => {
         });
       });
 
+      //get all statefulsets before thay are deleted
+      const statefulsets = oc.get("statefulset", {
+        selector: `app=${phase.instance},env-id=${phase.changeId},!shared,github-repo=${oc.git.repository},github-owner=${oc.git.owner}`,
+        namespace: phase.namespace,
+      });         
+
       oc.raw("delete", ["all"], {
         selector: `app=${phase.instance},env-id=${phase.changeId},!shared,github-repo=${oc.git.repository},github-owner=${oc.git.owner}`,
         wait: "true",
@@ -72,6 +78,23 @@ module.exports = settings => {
           namespace: phase.namespace,
         },
       );
+
+      //after statefulsets get deleted by the above delete all, remove all the PVCs associated with each statefulset
+      statefulsets.forEach(statefulset => {
+        let statefulsetPVCs = oc.get("pvc", {
+          selector: `statefulset=${statefulset.metadata.name}`,
+          namespace: phase.namespace,
+        });
+        statefulsetPVCs.forEach(statefulsetPVC => {
+          console.log(statefulsetPVC.metadata.name);
+          oc.delete([`pvc/${statefulsetPVC.metadata.name}`], {
+            "ignore-not-found": "true",
+            wait: "true",
+            namespace: phase.namespace,
+          });
+        })
+      });
+
     }
   });
 };

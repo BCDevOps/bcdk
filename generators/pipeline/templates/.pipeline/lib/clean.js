@@ -58,7 +58,7 @@ module.exports = settings => {
         });
       });
 
-      //get all statefulsets before thay are deleted
+      //get all statefulsets before they are deleted
       const statefulsets = oc.get("statefulset", {
         selector: `app=${phase.instance},env-id=${phase.changeId},!shared,github-repo=${oc.git.repository},github-owner=${oc.git.owner}`,
         namespace: phase.namespace,

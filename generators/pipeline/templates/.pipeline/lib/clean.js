@@ -79,7 +79,7 @@ module.exports = settings => {
         },
       );
 
-      //after statefulsets get deleted by the above delete all, remove all the PVCs associated with each statefulset
+      //remove all the PVCs associated with each statefulset, after they get deleted by above delete all operation
       statefulsets.forEach(statefulset => {
         let statefulsetPVCs = oc.get("pvc", {
           selector: `statefulset=${statefulset.metadata.name}`,

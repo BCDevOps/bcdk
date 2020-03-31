@@ -79,19 +79,14 @@ module.exports = settings => {
         },
       );
 
-      //remove all the PVCs associated with each statefulset, after they get deleted by above delete all operation
+      //remove all the PVCs mounted for each statefulset, after they get deleted by above delete all operation
       statefulsets.forEach(statefulset => {
-        let statefulsetPVCs = oc.get("pvc", {
+        oc.raw("delete", ["pvc"], {
           selector: `statefulset=${statefulset.metadata.name}`,
+          "ignore-not-found": "true",
+          wait: "true",
           namespace: phase.namespace,
         });
-        statefulsetPVCs.forEach(statefulsetPVC => {
-          oc.delete([`pvc/${statefulsetPVC.metadata.name}`], {
-            "ignore-not-found": "true",
-            wait: "true",
-            namespace: phase.namespace,
-          });
-        })
       });
 
     }

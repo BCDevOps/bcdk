@@ -58,6 +58,12 @@ module.exports = settings => {
         });
       });
 
+      //get all statefulsets before they are deleted
+      const statefulsets = oc.get("statefulset", {
+        selector: `app=${phase.instance},env-id=${phase.changeId},!shared,github-repo=${oc.git.repository},github-owner=${oc.git.owner}`,
+        namespace: phase.namespace,
+      });         
+
       oc.raw("delete", ["all"], {
         selector: `app=${phase.instance},env-id=${phase.changeId},!shared,github-repo=${oc.git.repository},github-owner=${oc.git.owner}`,
         wait: "true",
@@ -72,6 +78,17 @@ module.exports = settings => {
           namespace: phase.namespace,
         },
       );
+
+      //remove all the PVCs mounted for each statefulset, after they get deleted by above delete all operation
+      statefulsets.forEach(statefulset => {
+        oc.raw("delete", ["pvc"], {
+          selector: `statefulset=${statefulset.metadata.name}`,
+          "ignore-not-found": "true",
+          wait: "true",
+          namespace: phase.namespace,
+        });
+      });
+
     }
   });
 };

@@ -29,35 +29,6 @@ module.exports = class extends Generator {
         `You are not authenticated in an OpenShift cluster.\nPlease run 'oc login ...' command copied from the Web Console:\nhttps://console.pathfinder.gov.bc.ca:8443/console/command-line\n`,
       );
     }
-    const ocVersion = spawnSync("oc", ["version"], { encoding: "utf-8" });
-    const openshiftVersion = [];
-    const openshiftVersionRegex = /(?:(?:oc|openshift) v)(\d+\.\d+)/gm;
-    const ocVersionStdout = ocVersion.stdout;
-
-    let m;
-    while ((m = openshiftVersionRegex.exec(ocVersionStdout)) !== null) {
-      if (m.index === openshiftVersionRegex.lastIndex) {
-        openshiftVersionRegex.lastIndex++;
-      }
-      openshiftVersion.push(m[1]);
-    }
-    if (!(openshiftVersion.length == 2 && openshiftVersion[0] == openshiftVersion[1])) {
-      //could not find server version (minisihft?)
-      if (openshiftVersion.length == 1) {
-        const kubernetesVersion = ocVersion.stdout.match(/kubernetes v\d+\.\d+\.\d+/gm);
-        if (!(kubernetesVersion.length == 2 && kubernetesVersion[0] == kubernetesVersion[1])) {
-          this.env.error(
-            // eslint-disable-next-line prettier/prettier
-            `Your oc client kubernetes version (${kubernetesVersion[0]}) does not match the server kubernetes version (${kubernetesVersion[1]}).\nPlease get your client to align with the server version.\nYou can download it from:\nhttps://github.com/openshift/origin/releases/tag/`,
-          );
-        }
-      } else {
-        this.env.error(
-          // eslint-disable-next-line prettier/prettier
-          `Your oc client version (${openshiftVersion[0]}) does not match the server kubernetes version (${openshiftVersion[1]}).\nPlease get your client to align with the server version.\nYou can download it from:\nhttps://github.com/openshift/origin/releases/tag/v${openshiftVersion[1]}.0`,
-        );
-      }
-    }
   }
 
   /*   emit(event, ...args) {

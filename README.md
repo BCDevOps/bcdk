@@ -21,10 +21,7 @@ A documentation has been created when project [Zeva](https://github.com/bcgov/ze
 ### prerequisites
 
 * npm
-
-```sh
-npm i yo -g
-```
+* yeoman
 
 TODO: Consider using [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) since it will install Yeoman if it doesn't exist.
 ```sh
@@ -35,6 +32,7 @@ npx yo @bcgov/bcdk:python-hello
 
 ### setup
 
+Install the generator globally or locally
 ```sh
 npm install -g @bcgov/generator-bcdk@latest
 ```
@@ -55,19 +53,19 @@ mkdir <your-project>
 cd <your-project>
 
 // list the generators
-yo bcdk --generators
+npx yo @bcgov/bcdk --generators
 
 // create the jenkins pipeline
-yo bcdk:jenkins
+npx yo @bcgov/bcdk:jenkins
 
 // create your module/project/app pipeline
-yo bcdk:pipeline
+npx yo @bcgov/bcdk:pipeline
 
 // add module/project/app 
-yo bcdk:python-hello
+npx yo @bgov/bcdk:python-hello
 
 // create your module/project/app jenkins job
-yo bcdk:jenkins-job
+npx yo @bcgov/bcdk:jenkins-job
 ```
 
 #### bdck:jenkins
